@@ -123,7 +123,7 @@ export default function ProblemsPage() {
                         className="bg-brand-emerald text-white px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-brand-emerald/20 hover:scale-105 active:scale-95 transition-all"
                     >
                         <Plus className="w-5 h-5 transition-transform group-hover:rotate-90" />
-                        Add Category
+                        Add Problem
                     </button>
                 }
             />
@@ -278,7 +278,7 @@ export default function ProblemsPage() {
                                     type="submit"
                                     className="flex-1 py-3 px-4 bg-brand-emerald text-white font-bold rounded-xl shadow-lg shadow-brand-emerald/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
                                 >
-                                    {currentProblem._id ? "Update Category" : "Save Category"}
+                                    {currentProblem._id ? "Update Problem" : "Save Problem"}
                                 </button>
                             </div>
                         </form>

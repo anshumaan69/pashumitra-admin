@@ -43,7 +43,7 @@ export default function RootLayout({
                   <Sidebar />
                   <div className="flex-1 flex flex-col lg:pl-64 transition-all duration-300">
                     <Navbar />
-                    <main className="flex-1 pt-64 p-4 sm:p-8">
+                    <main className="flex-1 pt-32 px-4 pb-4 sm:px-8 sm:pb-8">
 
 
 

@@ -26,7 +26,7 @@ export function PageHeader({ title, description, action, search, icon: Icon }: P
     }, [title, description, setTitle, setDescription]);
 
     return (
-        <div className="flex flex-col lg:flex-row lg:items-center justify-end gap-4 mb-24 px-1 min-h-[1px]">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-end gap-4 mb-12 sm:mb-8 px-1 min-h-[1px] relative z-20">
 
 
 
