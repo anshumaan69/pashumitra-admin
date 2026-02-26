@@ -8,6 +8,8 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { Navbar } from "@/components/layout/Navbar";
 import { ToastProvider } from "@/components/ui/Toast";
 import { cn } from "@/lib/utils";
+import { HeaderProvider } from "@/lib/context/HeaderContext";
+import { UIProvider } from "@/lib/context/UIContext";
 
 
 const geistSans = Geist({
@@ -32,21 +34,30 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}>
         <ToastProvider>
-          {isLoginPage ? (
-            <main className="min-h-screen">{children}</main>
-          ) : (
-            <div className="flex bg-background min-h-screen">
-              <Sidebar />
-              <div className="flex-1 flex flex-col pl-64">
-                <Navbar />
-                <main className="flex-1 pt-20 p-8">
-                  {children}
-                </main>
-              </div>
-            </div>
-          )}
+          <HeaderProvider>
+            <UIProvider>
+              {isLoginPage ? (
+                <main className="min-h-screen">{children}</main>
+              ) : (
+                <div className="flex bg-background min-h-screen">
+                  <Sidebar />
+                  <div className="flex-1 flex flex-col lg:pl-64 transition-all duration-300">
+                    <Navbar />
+                    <main className="flex-1 pt-64 p-4 sm:p-8">
+
+
+
+                      {children}
+                    </main>
+                  </div>
+                </div>
+              )}
+            </UIProvider>
+          </HeaderProvider>
         </ToastProvider>
+
       </body>
+
     </html>
   );
 }

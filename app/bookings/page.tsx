@@ -15,10 +15,12 @@ import {
     Loader2,
     CheckCircle2,
     Clock4,
-    ExternalLink
+    ExternalLink,
+    CalendarCheck
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 interface Booking {
     _id: string;
@@ -86,47 +88,47 @@ export default function BookingsPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Call Bookings</h2>
-                    <p className="text-slate-500 font-medium">Monitor and manage all animal health calls.</p>
-                </div>
-                <div className="flex gap-2">
-                    {['all', 'pending', 'completed'].map((status) => (
-                        <button
-                            key={status}
-                            onClick={() => setStatusFilter(status as any)}
-                            className={cn(
-                                "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
-                                statusFilter === status
-                                    ? "bg-brand-emerald text-white shadow-lg shadow-brand-emerald/20"
-                                    : "bg-white text-slate-400 border border-border hover:bg-slate-50"
-                            )}
-                        >
-                            {status}
-                        </button>
-                    ))}
-                </div>
-            </div>
+            <PageHeader
+                title="Call Bookings"
+                description="Monitor and manage all animal health calls."
+                icon={CalendarCheck}
+                search={{
+                    value: searchTerm,
+                    onChange: setSearchTerm,
+                    placeholder: "Search by farmer, phone or category..."
+                }}
+                action={
+                    <div className="flex gap-2 bg-slate-100 dark:bg-white/5 p-1 rounded-2xl border border-border overflow-x-auto no-scrollbar max-w-full">
+                        {['all', 'pending', 'completed'].map((status) => (
+                            <button
+                                key={status}
+                                onClick={() => setStatusFilter(status as any)}
+                                className={cn(
+                                    "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
+                                    statusFilter === status
+                                        ? "bg-white dark:bg-brand-emerald text-brand-emerald dark:text-white shadow-sm"
+                                        : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
+                                )}
+                            >
+                                {status}
+                            </button>
+                        ))}
+                    </div>
+                }
+
+            />
+
 
             <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
-                <div className="p-4 border-b border-border bg-slate-50/50 flex items-center justify-between">
-                    <div className="relative w-96">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input
-                            type="text"
-                            placeholder="Search by name, phone or category..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full bg-white border border-border rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-brand-emerald outline-none transition-all"
-                        />
-                    </div>
-                    <div className="text-xs font-bold text-slate-400">
-                        Total Results: {filteredBookings.length}
+                <div className="p-4 border-b border-border bg-slate-50/50 flex items-center justify-end">
+                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Total Records: {filteredBookings.length}
                     </div>
                 </div>
 
-                <div className="overflow-x-auto">
+
+                <div className="overflow-x-auto no-scrollbar">
+
                     <table className="w-full text-left">
                         <thead>
                             <tr className="bg-slate-50/50 text-slate-400 text-[11px] uppercase tracking-widest font-black">

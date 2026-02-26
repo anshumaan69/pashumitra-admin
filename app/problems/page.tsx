@@ -13,11 +13,13 @@ import {
     CheckCircle2,
     XCircle,
     Loader2,
-    RefreshCcw
+    RefreshCcw,
+    AlertCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/Toast";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 interface Problem {
     _id: string;
@@ -103,41 +105,41 @@ export default function ProblemsPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Problem Management</h2>
-                    <p className="text-slate-500 font-medium">Manage categories for call bookings.</p>
-                </div>
-                <button
-                    onClick={() => {
-                        setCurrentProblem({ title: "", description: "", isActive: true });
-                        setIsModalOpen(true);
-                    }}
-                    className="bg-brand-emerald text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-brand-emerald/20 hover:scale-105 transition-transform"
-                >
-                    <Plus className="w-5 h-5" />
-                    Add Category
-                </button>
-            </div>
+            <PageHeader
+                title="Problem Management"
+                description="Manage categories for call bookings."
+                icon={AlertCircle}
+                search={{
+                    value: searchTerm,
+                    onChange: setSearchTerm,
+                    placeholder: "Search problem categories..."
+                }}
+                action={
+                    <button
+                        onClick={() => {
+                            setCurrentProblem({ title: "", description: "", isActive: true });
+                            setIsModalOpen(true);
+                        }}
+                        className="bg-brand-emerald text-white px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-brand-emerald/20 hover:scale-105 active:scale-95 transition-all"
+                    >
+                        <Plus className="w-5 h-5 transition-transform group-hover:rotate-90" />
+                        Add Category
+                    </button>
+                }
+            />
+
 
             <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
-                <div className="p-4 border-b border-border bg-slate-50/50 flex items-center justify-between">
-                    <div className="relative w-80">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input
-                            type="text"
-                            placeholder="Search problems..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full bg-white border border-border rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-brand-emerald transition-all outline-none"
-                        />
-                    </div>
-                    <button onClick={fetchProblems} className="p-2 text-slate-400 hover:text-brand-emerald transition-colors">
-                        <RefreshCcw className={cn("w-4 h-4", loading && "animate-spin")} />
+                <div className="p-4 border-b border-border bg-slate-50/50 flex items-center justify-end">
+                    <button onClick={fetchProblems} className="flex items-center gap-2 px-3 py-1.5 text-slate-400 hover:text-brand-emerald transition-all font-bold text-[10px] uppercase tracking-widest">
+                        <RefreshCcw className={cn("w-3.5 h-3.5", loading && "animate-spin")} />
+                        Reload Data
                     </button>
                 </div>
 
-                <div className="overflow-x-auto">
+
+                <div className="overflow-x-auto no-scrollbar">
+
                     <table className="w-full text-left">
                         <thead>
                             <tr className="bg-slate-50/50 text-slate-400 text-[11px] uppercase tracking-widest font-black">

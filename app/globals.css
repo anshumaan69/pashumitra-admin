@@ -4,7 +4,7 @@
   --color-brand-emerald: #064e3b;
   --color-brand-accent: #10b981;
   --color-brand-soft: #f0fdf4;
-  
+
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
 }
@@ -41,9 +41,17 @@ body {
   .glass {
     @apply bg-white/70 backdrop-blur-md border border-white/20;
   }
-  
+
   .glass-dark {
     @apply bg-slate-900/70 backdrop-blur-md border border-slate-700/30;
   }
-}
 
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

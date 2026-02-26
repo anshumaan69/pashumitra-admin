@@ -11,12 +11,14 @@ import {
     ThumbsUp,
     Clock,
     CheckCircle2,
-    Loader2
+    Loader2,
+    RefreshCcw as RefreshIcon
 } from "lucide-react";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/Toast";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 interface Question {
     _id: string;
@@ -42,6 +44,7 @@ export default function QuestionsPage() {
     const [loading, setLoading] = useState(true);
     const [answeringId, setAnsweringId] = useState<string | null>(null);
     const [answerText, setAnswerText] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         const token = localStorage.getItem("pashumitra_token");
@@ -79,25 +82,37 @@ export default function QuestionsPage() {
         }
     };
 
+    const filteredQuestions = questions.filter(q =>
+        q.questionText.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        q.user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        q.user?.phoneNumber?.includes(searchTerm)
+    );
+
     return (
         <div className="space-y-6 max-w-5xl mx-auto">
-            <header>
-                <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Q&A Management</h2>
-                <p className="text-slate-500 font-medium">Respond to farmer inquiries and share expert advice.</p>
-            </header>
+            <PageHeader
+                title="Q&A Management"
+                description="Respond to farmer inquiries and share expert advice."
+                icon={MessageSquare}
+                search={{
+                    value: searchTerm,
+                    onChange: setSearchTerm,
+                    placeholder: "Search questions or farmers..."
+                }}
+            />
 
             {loading ? (
                 <div className="py-20 text-center">
                     <Loader2 className="w-10 h-10 animate-spin text-brand-emerald mx-auto mb-4" />
                     <p className="text-slate-500 font-medium italic">Loading conversation feed...</p>
                 </div>
-            ) : questions.length === 0 ? (
+            ) : filteredQuestions.length === 0 ? (
                 <div className="py-20 text-center bg-white rounded-3xl border-2 border-dashed border-slate-100">
-                    <p className="text-slate-400 font-medium italic">No questions asked yet.</p>
+                    <p className="text-slate-400 font-medium italic">No questions found matching your search.</p>
                 </div>
             ) : (
                 <div className="space-y-6">
-                    {questions.map((q, idx) => (
+                    {filteredQuestions.map((q, idx) => (
                         <motion.div
                             key={q._id}
                             initial={{ opacity: 0, x: -20 }}
@@ -155,7 +170,7 @@ export default function QuestionsPage() {
                                                 }}
                                                 className="absolute top-4 right-4 text-emerald-600 hover:scale-110 transition-transform p-2"
                                             >
-                                                <RefreshCcwIcon className="w-4 h-4" />
+                                                <RefreshIcon className="w-4 h-4" />
                                             </button>
                                         </div>
                                     ) : (
@@ -211,27 +226,5 @@ export default function QuestionsPage() {
                 </div>
             )}
         </div>
-    );
-}
-
-function RefreshCcwIcon(props: any) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-            <path d="M3 3v5h5" />
-            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-            <path d="M16 16h5v5" />
-        </svg>
     );
 }
