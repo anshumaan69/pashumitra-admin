@@ -12,6 +12,7 @@ import {
     BookOpen,
     LogOut,
     ChevronRight,
+    Bell, // Added for Notifications
     X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,7 @@ const menuItems = [
     { icon: CalendarDays, label: "Bookings", href: "/bookings" }, // Changed icon to CalendarDays
     { icon: MessageSquare, label: "Q&A System", href: "/questions" },
     { icon: BookOpen, label: "Posts", href: "/posts" },
+    { icon: Bell, label: "Notifications", href: "/notifications" }, // Added Notifications link
 ];
 
 export function Sidebar() {
