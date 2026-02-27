@@ -14,7 +14,8 @@ import {
     Tag,
     Loader2,
     X,
-    Send
+    Send,
+    User as UserIcon
 } from "lucide-react";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -27,6 +28,12 @@ interface Post {
     question: string;
     answer: string;
     category: string;
+    askedByName?: string;
+    askedBy?: {
+        _id: string;
+        name: string;
+        phoneNumber: string;
+    };
     likes: string[];
     comments: any[];
     admin: {
@@ -47,7 +54,8 @@ export default function PostsPage() {
     const [formData, setFormData] = useState({
         question: "",
         answer: "",
-        category: ""
+        category: "",
+        askedByName: ""
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -92,7 +100,7 @@ export default function PostsPage() {
             await api.post("/posts", formData);
             toast("New knowledge post published!");
             setIsAddModalOpen(false);
-            setFormData({ question: "", answer: "", category: "" });
+            setFormData({ question: "", answer: "", category: "", askedByName: "" });
             fetchPosts();
         } catch (error) {
             console.error("Error creating post", error);
@@ -164,6 +172,14 @@ export default function PostsPage() {
                                     </div>
                                 </div>
 
+                                {post.askedByName && (
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500">
+                                            <UserIcon className="w-3.5 h-3.5" />
+                                        </div>
+                                        <span className="text-xs font-bold text-blue-600">Asked by {post.askedByName}</span>
+                                    </div>
+                                )}
                                 <h3 className="text-lg font-bold text-slate-900 mb-3 leading-tight">
                                     Q: {post.question}
                                 </h3>
@@ -235,6 +251,18 @@ export default function PostsPage() {
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black uppercase bg-slate-100 text-slate-500 px-3 py-1 rounded-lg w-fit">
+                                            Asked By (Farmer Name)
+                                        </label>
+                                        <input
+                                            value={formData.askedByName}
+                                            onChange={(e) => setFormData({ ...formData, askedByName: e.target.value })}
+                                            className="w-full text-black bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 text-sm font-medium outline-none focus:ring-4 focus:ring-brand-emerald/10 focus:border-brand-emerald transition-all"
+                                            placeholder="Name of the person who asked (optional)"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black uppercase bg-slate-100 text-slate-500 px-3 py-1 rounded-lg w-fit">
                                             Category
                                         </label>
                                         <input
@@ -248,7 +276,7 @@ export default function PostsPage() {
 
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black uppercase bg-slate-100 text-slate-500 px-3 py-1 rounded-lg w-fit">
-                                            Question (Part 1)
+                                            Question
                                         </label>
                                         <input
                                             required
