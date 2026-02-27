@@ -5,9 +5,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
     LayoutDashboard,
-    AlertCircle,
-    CalendarCheck,
+    AlertCircle, // Keep AlertCircle for Problems
+    LayoutGrid, // Added for Categories
+    CalendarDays, // Changed from CalendarCheck for Bookings
     MessageSquare,
+    BookOpen,
     LogOut,
     ChevronRight,
     X
@@ -21,8 +23,10 @@ import { useUI } from "@/lib/context/UIContext";
 const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/" },
     { icon: AlertCircle, label: "Problems", href: "/problems" },
-    { icon: CalendarCheck, label: "Bookings", href: "/bookings" },
+    { icon: LayoutGrid, label: "Categories", href: "/categories" }, // Added Categories link
+    { icon: CalendarDays, label: "Bookings", href: "/bookings" }, // Changed icon to CalendarDays
     { icon: MessageSquare, label: "Q&A System", href: "/questions" },
+    { icon: BookOpen, label: "Posts", href: "/posts" },
 ];
 
 export function Sidebar() {

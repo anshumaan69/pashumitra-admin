@@ -7,6 +7,8 @@ const api = axios.create({
     },
 });
 
+console.log('API Base URL:', api.defaults.baseURL);
+
 // Add a request interceptor to attach the JWT token
 api.interceptors.request.use((config) => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('pashumitra_token') : null;
