@@ -60,6 +60,7 @@ export default function SubscriptionsPage() {
     const router = useRouter();
     const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
     const [loading, setLoading] = useState(true);
+    const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState<'all' | Subscription['status']>('all');
 
@@ -72,6 +73,21 @@ export default function SubscriptionsPage() {
             console.error("Failed to fetch subscriptions", error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleForceActivate = async (id: string) => {
+        if (!confirm("Are you sure you want to forcefully activate this subscription?")) return;
+
+        setActionLoading(id);
+        try {
+            await api.put(`/subscriptions/admin/${id}/force-active`);
+            await fetchSubscriptions();
+        } catch (error) {
+            console.error("Failed to force activate", error);
+            alert("Failed to activate subscription.");
+        } finally {
+            setActionLoading(null);
         }
     };
 
@@ -170,6 +186,7 @@ export default function SubscriptionsPage() {
                                 <th className="px-6 py-4">Payments</th>
                                 <th className="px-6 py-4">Next Billing / Trial End</th>
                                 <th className="px-6 py-4">Joined</th>
+                                <th className="px-6 py-4 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border">
@@ -272,6 +289,25 @@ export default function SubscriptionsPage() {
                                                             day: 'numeric', month: 'short', year: 'numeric'
                                                         })}
                                                     </span>
+                                                </td>
+
+                                                {/* Actions */}
+                                                <td className="px-6 py-4 text-right">
+                                                    {sub.status !== 'active' && sub.status !== 'completed' && (
+                                                        <button
+                                                            onClick={() => handleForceActivate(sub._id)}
+                                                            disabled={actionLoading === sub._id}
+                                                            className="px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-xs font-bold transition-colors inline-flex items-center gap-1"
+                                                            title="Immediately activate subscription for debugging"
+                                                        >
+                                                            {actionLoading === sub._id ? (
+                                                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                                            ) : (
+                                                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                                            )}
+                                                            Force Activate
+                                                        </button>
+                                                    )}
                                                 </td>
                                             </motion.tr>
                                         );
