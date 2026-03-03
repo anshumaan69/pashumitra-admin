@@ -146,7 +146,7 @@ export default function Dashboard() {
                       {booking.user?.name || "Farmer"}
                     </p>
                     <p className="text-[11px] text-slate-500 font-medium truncate max-w-[120px]">
-                      {booking.problem?.title || "Health Inquiry"}
+                      {booking.problem?.title || "General Query"}
                     </p>
                   </div>
                   <div className="ml-auto text-right">
