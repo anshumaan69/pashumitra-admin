@@ -20,6 +20,7 @@ export default function SettingsPage() {
     const router = useRouter();
     const { toast } = useToast();
     const [maintenanceText, setMaintenanceText] = useState("");
+    const [isMaintenanceMode, setIsMaintenanceMode] = useState(false);
     const [loading, setLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
 
@@ -49,6 +50,7 @@ export default function SettingsPage() {
             const { data } = await api.get("/settings");
             if (data.success) {
                 setMaintenanceText(data.data.maintenanceText);
+                setIsMaintenanceMode(data.data.isMaintenanceMode);
             }
         } catch (error) {
             console.error("Failed to fetch settings", error);
@@ -61,9 +63,9 @@ export default function SettingsPage() {
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            const { data } = await api.put("/settings", { maintenanceText });
+            const { data } = await api.put("/settings", { maintenanceText, isMaintenanceMode });
             if (data.success) {
-                toast("Maintenance text updated successfully!");
+                toast("Settings updated successfully!");
                 // Trigger a local storage update for the sidebar if needed, or just let it be
             }
         } catch (error) {
@@ -108,6 +110,35 @@ export default function SettingsPage() {
                                 placeholder="Enter message (e.g., Scheduled maintenance today at 6 PM. Apps might be slow.)"
                                 className="w-full h-40 bg-slate-50 border border-slate-100 rounded-2xl p-6 text-slate-900 font-medium outline-none focus:ring-2 focus:ring-brand-emerald transition-all resize-none shadow-inner"
                             />
+                        </div>
+
+                        <div className="flex items-center justify-between p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div className="flex items-center gap-3">
+                                <div className={cn(
+                                    "w-10 h-10 rounded-xl flex items-center justify-center transition-all",
+                                    isMaintenanceMode ? "bg-red-100 text-red-500" : "bg-emerald-100 text-emerald-500"
+                                )}>
+                                    <ShieldAlert className="w-6 h-6" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-bold text-slate-900">Maintenance Mode</p>
+                                    <p className="text-[10px] text-slate-500 font-medium">When ON, app and admin will show maintenance notice.</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setIsMaintenanceMode(!isMaintenanceMode)}
+                                className={cn(
+                                    "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none",
+                                    isMaintenanceMode ? "bg-red-500" : "bg-emerald-500"
+                                )}
+                            >
+                                <span
+                                    className={cn(
+                                        "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                                        isMaintenanceMode ? "translate-x-6" : "translate-x-1"
+                                    )}
+                                />
+                            </button>
                         </div>
 
                         <div className="flex items-center justify-between pt-4 border-t border-slate-50">

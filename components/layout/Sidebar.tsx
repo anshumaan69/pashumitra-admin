@@ -52,6 +52,7 @@ export function Sidebar() {
     const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
     const [adminUser, setAdminUser] = useState<any>(null);
     const [maintenanceText, setMaintenanceText] = useState("");
+    const [isMaintenanceMode, setIsMaintenanceMode] = useState(false);
 
     useEffect(() => {
         const userStr = localStorage.getItem("pashumitra_user");
@@ -71,6 +72,7 @@ export function Sidebar() {
             const { data } = await api.get("/settings");
             if (data.success) {
                 setMaintenanceText(data.data.maintenanceText);
+                setIsMaintenanceMode(data.data.isMaintenanceMode);
             }
         } catch (error) {
             console.error("Failed to fetch settings", error);
@@ -130,6 +132,18 @@ export function Sidebar() {
                         <p className="text-xs text-red-400/80 leading-relaxed font-medium capitalize">
                             {maintenanceText}
                         </p>
+                    </div>
+                )}
+
+                {/* Maintenance Mode Badge (for everyone) */}
+                {isMaintenanceMode && (
+                    <div className="mx-4 mb-4 p-3 bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/20 animate-pulse border border-red-400">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <ShieldAlert className="w-4 h-4" />
+                                <span className="text-[10px] font-black uppercase tracking-widest">Maintenance ON</span>
+                            </div>
+                        </div>
                     </div>
                 )}
 
