@@ -14,12 +14,18 @@ import {
     ChevronRight,
     Bell,
     CreditCard,
-    X
+    X,
+    Settings as SettingsIcon,
+    ShieldAlert,
+    Save,
+    Users as UsersIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AdminDetailsModal } from "@/components/modals/AdminDetailsModal";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUI } from "@/lib/context/UIContext";
+import api from "@/lib/api";
+import { useToast } from "@/components/ui/Toast";
 
 
 const menuItems = [
@@ -33,29 +39,51 @@ const menuItems = [
     { icon: Bell, label: "Notifications", href: "/notifications" },
 ];
 
+const superAdminItems = [
+    { icon: UsersIcon, label: "User Management", href: "/users" },
+    { icon: SettingsIcon, label: "System Settings", href: "/settings" },
+];
+
 export function Sidebar() {
     const pathname = usePathname();
     const router = useRouter();
+    const { toast } = useToast();
     const { isSidebarOpen, setSidebarOpen } = useUI();
     const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
     const [adminUser, setAdminUser] = useState<any>(null);
+    const [maintenanceText, setMaintenanceText] = useState("");
 
     useEffect(() => {
         const userStr = localStorage.getItem("pashumitra_user");
         if (userStr) {
             try {
-                setAdminUser(JSON.parse(userStr));
+                const user = JSON.parse(userStr);
+                setAdminUser(user);
             } catch (e) {
                 console.error("Error parsing user data", e);
             }
         }
+        fetchSettings();
     }, []);
+
+    const fetchSettings = async () => {
+        try {
+            const { data } = await api.get("/settings");
+            if (data.success) {
+                setMaintenanceText(data.data.maintenanceText);
+            }
+        } catch (error) {
+            console.error("Failed to fetch settings", error);
+        }
+    };
 
     const handleLogout = () => {
         localStorage.removeItem("pashumitra_token");
         localStorage.removeItem("pashumitra_user");
         router.push("/login");
     };
+
+    const isSuperAdmin = adminUser?.role === 'super_admin';
 
     return (
         <>
@@ -77,7 +105,7 @@ export function Sidebar() {
                 isSidebarOpen ? "translate-x-0" : "-translate-x-full"
             )}>
                 {/* Brand Header */}
-                <div className="h-24 flex items-center justify-between px-8 bg-gradient-to-b from-white/5 to-transparent">
+                <div className="h-24 flex items-center justify-between px-8 bg-gradient-to-b from-white/5 to-transparent shrink-0">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-brand-emerald flex items-center justify-center text-white shadow-lg shadow-brand-emerald/20 rotate-3">
                             <span className="font-black text-xl">PM</span>
@@ -92,7 +120,20 @@ export function Sidebar() {
                     </button>
                 </div>
 
-                <nav className="flex-1 px-4 py-4 space-y-2">
+                {/* Maintenance Display (for everyone except Super Admin) */}
+                {!isSuperAdmin && maintenanceText && (
+                    <div className="mx-4 mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+                        <div className="flex items-center gap-2 mb-1">
+                            <ShieldAlert className="w-4 h-4 text-red-500" />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-red-500">Notice</span>
+                        </div>
+                        <p className="text-xs text-red-400/80 leading-relaxed font-medium capitalize">
+                            {maintenanceText}
+                        </p>
+                    </div>
+                )}
+
+                <nav className="flex-1 px-4 py-4 space-y-2 overflow-y-auto custom-scrollbar">
                     {menuItems.map((item) => {
                         const isActive = pathname === item.href;
                         return (
@@ -122,9 +163,47 @@ export function Sidebar() {
                             </Link>
                         );
                     })}
+
+                    {/* Super Admin Special Sections */}
+                    {isSuperAdmin && (
+                        <>
+                            <div className="px-4 pt-6 pb-2">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500/60">Administration</span>
+                            </div>
+                            {superAdminItems.map((item) => {
+                                const isActive = pathname === item.href;
+                                return (
+                                    <Link
+                                        key={item.href}
+                                        href={item.href}
+                                        onClick={() => setSidebarOpen(false)}
+                                        className={cn(
+                                            "group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative overflow-hidden",
+                                            isActive
+                                                ? "bg-emerald-500/10 text-emerald-400 shadow-inner"
+                                                : "hover:text-emerald-400 hover:bg-emerald-500/5"
+                                        )}
+                                    >
+                                        <item.icon className={cn("w-5 h-5 transition-colors", isActive ? "text-emerald-400" : "text-slate-600 group-hover:text-emerald-500")} />
+                                        <span className="font-semibold text-sm">{item.label}</span>
+                                        {isActive && (
+                                            <motion.div
+                                                layoutId="active-sidebar"
+                                                className="absolute left-0 w-1.5 h-6 bg-emerald-500 rounded-r-full"
+                                            />
+                                        )}
+                                        <ChevronRight className={cn(
+                                            "ml-auto w-4 h-4 transition-all duration-300",
+                                            isActive ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2 group-hover:opacity-40 group-hover:translate-x-0"
+                                        )} />
+                                    </Link>
+                                );
+                            })}
+                        </>
+                    )}
                 </nav>
 
-                <div className="mt-auto p-4 space-y-4">
+                <div className="mt-auto p-4 space-y-4 shrink-0 bg-slate-950/80 backdrop-blur-md border-t border-white/5">
                     {/* Admin Profile Section */}
                     <motion.button
                         whileHover={{ scale: 1.02 }}
@@ -138,7 +217,7 @@ export function Sidebar() {
                         <div className="flex-1 min-w-0">
                             <p className="font-bold text-sm text-white truncate">{adminUser?.name || "Admin Staff"}</p>
                             <p className="text-[10px] text-brand-emerald/60 uppercase font-black tracking-widest truncate">
-                                {adminUser?.role === 'admin' ? "System Administrator" : "Admin Staff"}
+                                {isSuperAdmin ? "Super Administrator" : adminUser?.role === 'admin' ? "System Administrator" : "Admin Staff"}
                             </p>
                         </div>
                     </motion.button>

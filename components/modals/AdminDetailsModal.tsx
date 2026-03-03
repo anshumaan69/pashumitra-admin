@@ -36,7 +36,7 @@ export function AdminDetailsModal({ isOpen, onClose, adminUser }: AdminDetailsMo
                                 {adminUser?.name || "Administrator"}
                             </h3>
                             <div className="mt-2 px-3 py-1 bg-brand-emerald/10 text-brand-emerald rounded-full text-[10px] font-black uppercase tracking-widest">
-                                {adminUser?.role || "Admin"} Account
+                                {adminUser?.role === 'super_admin' ? "Super Admin" : adminUser?.role === 'admin' ? "System Admin" : "Admin Staff"} Account
                             </div>
 
                             <div className="w-full mt-8 space-y-4">

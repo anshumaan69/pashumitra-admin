@@ -151,7 +151,8 @@ export default function LoginPage() {
                                         className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 outline-none focus:ring-2 focus:ring-brand-emerald transition-all font-bold tracking-[0.5em] text-center text-slate-900"
                                     />
                                 </div>
-                                <p className="text-[10px] text-slate-400 font-medium text-center italic">Check your mobile for the code (Hint: 123456)</p>
+                                <p className="text-[10px] text-slate-400 font-medium text-center italic">Check your mobile for the code (Hint: Admin - 123456, Super Admin - 696969)</p>
+
                             </div>
 
                             {error && (
