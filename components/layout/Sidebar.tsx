@@ -18,6 +18,7 @@ import {
     Settings as SettingsIcon,
     ShieldAlert,
     Save,
+    Store,
     Users as UsersIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -36,6 +37,7 @@ const menuItems = [
     { icon: CreditCard, label: "Subscriptions", href: "/subscriptions" },
     { icon: MessageSquare, label: "Q&A System", href: "/questions" },
     { icon: BookOpen, label: "Posts", href: "/posts" },
+    { icon: Store, label: "Cow Sales", href: "/cowsales" },
     { icon: Bell, label: "Notifications", href: "/notifications" },
 ];
 
